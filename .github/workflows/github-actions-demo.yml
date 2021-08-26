@@ -34,10 +34,8 @@ jobs:
       run: terraform apply --auto-approve
       working-directory: terraform
 
-  curl:
-    runs-on: ubuntu-latest
-    steps:
-    - name: curl
+
+    - name: Curl test
       uses: wei/curl@v1
       with:
-        args: -X POST https://httpbin.org/post
+        args: --header "Content-Type: application/json" --data '{"username":"xyz","password":"xyz"}' https://qzqzaltvs2.execute-api.eu-west-1.amazonaws.com/default/lambda_function_name/sapi
