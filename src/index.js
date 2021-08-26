@@ -1,9 +1,10 @@
-const serverless = require('serverless-http');
-const express = require('express')
-const app = express()
+var express = require("express");
+var app = express();
 
-app.get('/', function (req, res) {
-  res.send('Hello World!')
-})
+app.post("/api", (req, res, next) => {
+ res.json(["Tony","Gol"]);
+});
 
-module.exports.handler = serverless(app);
+app.listen(3000, () => {
+ console.log("Server running on port 3000");
+});
