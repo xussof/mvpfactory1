@@ -16,6 +16,7 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: echo "${{ secrets.MVPFACTORY }}"
+      - run: pwd
 
 # Build docker image
 #Build lambda
