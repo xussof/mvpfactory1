@@ -19,7 +19,9 @@ jobs:
       - run: pwd
       - run: cd src && npm i
       - run: cd src && ls
-      - run: zip -r src.zip src
+      - run: zip -r terraform/src.zip src
       - run: ls
+      - run: terraform init
+      - run: terraform apply --auto-approve
 # Build docker image
 #Build lambda
