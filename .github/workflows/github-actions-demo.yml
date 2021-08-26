@@ -26,7 +26,6 @@ jobs:
     - name: Testing aws
       run: aws lambda list-functions
 
-#      - run: aws --version
     - name: Initializing terraform
       run: terraform init
       working-directory: terraform
@@ -34,5 +33,11 @@ jobs:
     - name: Applying terraform
       run: terraform apply --auto-approve
       working-directory: terraform
-# Build docker image
-#Build lambda
+
+  curl:
+    runs-on: ubuntu-latest
+    steps:
+    - name: curl
+      uses: wei/curl@v1
+      with:
+        args: -X POST https://httpbin.org/post
