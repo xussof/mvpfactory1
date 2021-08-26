@@ -17,7 +17,8 @@ jobs:
         aws-region: eu-west-1
 
     - name: npm build
-      run: cd src && npm i
+      run: npm i
+      working-directory: src
 
     - name: Zipping to terraform
       run: zip -r terraform/src.zip src
