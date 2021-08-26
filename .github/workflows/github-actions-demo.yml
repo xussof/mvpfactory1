@@ -35,7 +35,7 @@ jobs:
       working-directory: terraform
 
 
-    - name: Curl test
-      uses: wei/curl@v1
-      with:
-        args: --header "Content-Type: application/json" --data '{"username":"xyz","password":"xyz"}' https://qzqzaltvs2.execute-api.eu-west-1.amazonaws.com/default/lambda_function_name/sapi
+  #  - name: Curl test
+  #    uses: wei/curl@v1
+  #    with:
+  #      args: --header "Content-Type: application/json" --data '{"username":"xyz","password":"xyz"}' https://qzqzaltvs2.execute-api.eu-west-1.amazonaws.com/default/lambda_function_name/sapi
