@@ -21,11 +21,15 @@ jobs:
 
     - name: Zipping to terraform
       run: zip -r terraform/src.zip src
+
     - name: Testing aws
       run: aws lambda list-functions
 
 #      - run: aws --version
-#      - run: terraform init
-#      - run: terraform apply --auto-approve
+    - name: Initializing terraform
+      run: terraform init
+
+    - name: Applying terraform
+      run: terraform apply --auto-approve
 # Build docker image
 #Build lambda
