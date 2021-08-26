@@ -17,6 +17,7 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: echo "${{ secrets.MVPFACTORY }}"
       - run: pwd
+      - run: cd src && npm i
 
 # Build docker image
 #Build lambda
