@@ -21,7 +21,8 @@ jobs:
       - run: cd src && ls
       - run: zip -r terraform/src.zip src
       - run: ls
-      - run: aws lambda list-functions
+#      - run: aws lambda list-functions
+      - run: aws --version
 #      - run: terraform init
 #      - run: terraform apply --auto-approve
 # Build docker image
