@@ -18,6 +18,7 @@ jobs:
       - run: echo "${{ secrets.MVPFACTORY }}"
       - run: pwd
       - run: cd src && npm i
+      - run: cd src && ls
 
 # Build docker image
 #Build lambda
