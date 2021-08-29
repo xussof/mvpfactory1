@@ -12,6 +12,8 @@ jobs:
 
     - name: Setup terraform
       uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 0.13.2
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -30,22 +32,19 @@ jobs:
     - name: Initializing terraform
       run: terraform init
       working-directory: terraform
-      with:
-        terraform_version: 0.13.2
+
 
     - name: Applying terraform
       id: terraformapply
       run: terraform apply --auto-approve
       working-directory: terraform
-      with:
-        terraform_version: 0.13.2
+
 
     - name: Terraform output api gateway path
       id: terraform_output
       run: terraform output base_url
       working-directory: terraform
-      with:
-        terraform_version: 0.13.2
+
 
     - name: Getting api gateway path
       run: echo ${{ steps.terraform_output.outputs }}
@@ -55,6 +54,3 @@ jobs:
       id: curl
       with:
         args: --data '{"username":"xyz","password":"xyz"}' https://laxzmnst1f.execute-api.eu-west-1.amazonaws.com/serverless_lambda_stage/api
-
-    - name: Getting curl answer
-      run: echo ${{ steps.curl.outputs }}
