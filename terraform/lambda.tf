@@ -1,44 +1,41 @@
-# Lambda
-resource "aws_lambda_permission" "apigw_lambda" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda.function_name
-  principal     = "apigateway.amazonaws.com"
+resource "aws_lambda_function" "lambda_get_user" {
+  function_name = "GetUser"
 
-  # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:${var.myregion}:${var.accountId}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.method.http_method}${aws_api_gateway_resource.resource.path}"
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_bucket_object.lambda_get_user.key
+
+  runtime = "nodejs12.x"
+  handler = "index.handler"
+
+  source_code_hash = data.archive_file.lambda_get_user.output_base64sha256
+
+  role = aws_iam_role.lambda_exec.arn
 }
 
-resource "aws_lambda_function" "lambda" {
-  filename      = "src.zip"
-  function_name = "mylambda"
-  role          = aws_iam_role.role.arn
-  handler       = "src/index.handler"
-  runtime       = "nodejs12.x"
+resource "aws_cloudwatch_log_group" "lambda_get_user" {
+  name = "/aws/lambda/${aws_lambda_function.lambda_get_user.function_name}"
 
-  # The filebase64sha256() function is available in Terraform 0.11.12 and later
-  # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
-  # source_code_hash = "${base64sha256(file("src.zip"))}"
-  source_code_hash = filebase64sha256("src.zip")
+  retention_in_days = 30
 }
 
-# IAM
-resource "aws_iam_role" "role" {
-  name = "myrole"
+resource "aws_iam_role" "lambda_exec" {
+  name = "serverless_lambda"
 
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Sid    = ""
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+      }
+    ]
+  })
 }
-POLICY
+
+resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }

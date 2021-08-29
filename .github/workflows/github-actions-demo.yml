@@ -6,8 +6,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: Setup terraform
+      uses: hashicorp/setup-terraform@v1
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -23,20 +27,34 @@ jobs:
     - name: Zipping to terraform
       run: zip -r terraform/src.zip src
 
-    - name: Testing aws
-      run: aws lambda list-functions
-
     - name: Initializing terraform
       run: terraform init
       working-directory: terraform
+      with:
+        terraform_version: 0.13.2
 
     - name: Applying terraform
+      id: terraformapply
       run: terraform apply --auto-approve
       working-directory: terraform
+      with:
+        terraform_version: 0.13.2
 
+    - name: Terraform output api gateway path
+      id: terraform_output
+      run: terraform output base_url
+      working-directory: terraform
+      with:
+        terraform_version: 0.13.2
+
+    - name: Getting api gateway path
+      run: echo ${{ steps.terraform_output.outputs }}
 
     - name: Curl test
       uses: wei/curl@v1
+      id: curl
       with:
-#        args: --header "Content-Type: application/json" --data '{"username":"xyz","password":"xyz"}' https://qzqzaltvs2.execute-api.eu-west-1.amazonaws.com/default/lambda_function_name/sapi
-        args: --data '{"username":"xyz","password":"xyz"}' https://qzqzaltvs2.execute-api.eu-west-1.amazonaws.com/default/lambda_function_name/api
+        args: --data '{"username":"xyz","password":"xyz"}' https://laxzmnst1f.execute-api.eu-west-1.amazonaws.com/serverless_lambda_stage/api
+
+    - name: Getting curl answer
+      run: echo ${{ steps.curl.outputs }}
